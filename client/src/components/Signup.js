@@ -7,6 +7,7 @@ export const SignupForm = () => {
   // Pass the useFormik() hook initial form values and a submit function that will
   // be called when the form is submitted
 
+  // FETCH DATA AND REFRESH
   useEffect(() => {
     console.log("FETCH! ");
     fetch("/customers")
@@ -17,6 +18,8 @@ export const SignupForm = () => {
       });
   }, [refreshPage]);
 
+
+  // FORM VALIDATION SCHEMA
   const formSchema = yup.object().shape({
     email: yup.string().email("Invalid email").required("Must enter email"),
     name: yup.string().required("Must enter a name").max(15),
@@ -29,31 +32,32 @@ export const SignupForm = () => {
       .max(125),
   });
 
-  const formik = useFormik({
-    initialValues: {
+  // FORMIK HOOK
+  const formik = useFormik({  // Use the formik hook to initialize Formik. It provied the:
+    initialValues: { 
       name: "",
       email: "",
       age: "",
-    },
-    validationSchema: formSchema,
-    onSubmit: (values) => {
+    }, 
+    validationSchema: formSchema,  // Validation schema
+    onSubmit: (values) => {  // Submission function
       fetch("customers", {
-        method: "POST",
+        method: "POST",  // 'POST' request on submission
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(values, null, 2),
       }).then((res) => {
         if (res.status == 200) {
-          setRefreshPage(!refreshPage);
+          setRefreshPage(!refreshPage);  // Page refreshes if the "POST" is sucessfull
         }
       });
     },
   });
 
   return (
+    // FORM RENDERING
     <div>
-      <h1>Customer sign up form</h1>
       <form onSubmit={formik.handleSubmit} style={{ margin: "30px" }}>
         <label htmlFor="email">Email Address</label>
         <br />
